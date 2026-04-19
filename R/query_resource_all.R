@@ -75,12 +75,34 @@ query_resource_all <- function(
 
   }
 
-  #get result
-  result <- httr::GET(
-    url = .url,
-    query = query_settings,
-    timeout = httr::timeout(15)
+  get_retry_wait <- function(.result, .attempt_i) {
+
+    retry_after <- httr::headers(.result)[["retry-after"]]
+
+    if(!is.null(retry_after) && length(retry_after) == 1) {
+      retry_numeric <- suppressWarnings(as.numeric(retry_after))
+      if(!is.na(retry_numeric) && retry_numeric > 0) {
+        return(retry_numeric)
+      }
+    }
+
+    min(60, 2^(.attempt_i + 1))
+  }
+
+  #get result with exponential-backoff retry on rate-limit / transient errors
+  max_attempts <- 8
+
+  for(attempt_i in seq_len(max_attempts)) {
+    result <- httr::GET(
+      url = .url,
+      query = query_settings,
+      timeout = httr::timeout(15)
     )
+    if(!(result$status_code %in% c(429, 500, 502, 503, 504))) break
+    if(attempt_i < max_attempts) {
+      Sys.sleep(get_retry_wait(result, attempt_i))
+    }
+  }
 
   #display error message if required
   if(result$status_code >= 400) {
