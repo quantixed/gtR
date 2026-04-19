@@ -53,7 +53,7 @@ To find projects we need to specify an `output` as well as a resource (if you're
 data <- get_resources(
   resource = "organisation", #because the University of Exeter is an organisation
   output = "project", #because we want to find projects associated with UoE
-  resource_id = "961756BF-E31F-4A13-836F-0A09BA02385C", #we found this ID in the 'getting started' example,
+  resource_id = "01F2924C-FFB4-481B-B8F0-31234D33F0FA", #we found this ID in the 'getting started' example,
   page_nums = 1, # only specifying one page number as to keep number of results small
   size = 10 #as above
   #we won't worry about other arguments as we're happy to leave them blank on this occasion

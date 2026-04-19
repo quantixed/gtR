@@ -43,12 +43,15 @@ exeter_id <- query_resource_all(
   search_term = "Exeter"
   )
 
-id <- "961756BF-E31F-4A13-836F-0A09BA02385C"
+# find id in exeter_id where the name is "University of Exeter"
+# (case insensitive) search
+id <- exeter_id$id[grepl("University of Exeter",
+                         exeter_id$name, ignore.case = TRUE)]
 
 data <- query_resource_combination(
   resource = "organisation",
   output = "project",
-  "961756BF-E31F-4A13-836F-0A09BA02385C",
+  resource_id = id,
   size = 10
 )
 

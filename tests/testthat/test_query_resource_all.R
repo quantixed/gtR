@@ -10,11 +10,18 @@ testthat::test_that(
 
 #test that you get a data frame or list as expected-----------------------------
 
-#that you get a dataframe, assuming no API errors
-testthat::expect_s3_class(gtR::query_resource_all("organisation"), "data.frame")
+testthat::test_that(
+  "live API returns expected object types",
+  {
+    testthat::skip_if(Sys.getenv("GTR_RUN_LIVE_TESTS") != "true")
 
-#that you get a list assuming no API errors
-testthat::expect_s3_class(gtR::query_resource_all("organisation", df_only = F), "list")
+    #that you get a dataframe, assuming no API errors
+    testthat::expect_s3_class(gtR::query_resource_all("organisation"), "data.frame")
+
+    #that you get a list assuming no API errors
+    testthat::expect_s3_class(gtR::query_resource_all("organisation", df_only = FALSE), "list")
+  }
+)
 
 #tyhat picking a non-logical df_only throws an error-----------------------
 

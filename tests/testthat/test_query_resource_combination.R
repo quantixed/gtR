@@ -2,7 +2,7 @@
 testthat::test_that(
   "unknown resource combination gives error",
   expect_error(
-    gtR::query_resource_combination("organisation", "product", "961756BF-E31F-4A13-836F-0A09BA02385C"),
+    gtR::query_resource_combination("organisation", "product", "01F2924C-FFB4-481B-B8F0-31234D33F0FA"),
     "'resource' and 'output' combination must be in the list of options as per 'gtr_combinations'",
     fixed = T
   )
@@ -12,7 +12,7 @@ testthat::test_that(
 testthat::test_that(
   "size outside range gives error",
   expect_error(
-    gtR::query_resource_combination("organisation", "project", "961756BF-E31F-4A13-836F-0A09BA02385C", size = 101),
+    gtR::query_resource_combination("organisation", "project", "01F2924C-FFB4-481B-B8F0-31234D33F0FA", size = 101),
     "'size' must be an integer >= 10 and <= 100",
     fixed = T
   )
@@ -20,18 +20,25 @@ testthat::test_that(
 
 #test that you get a data frame or list as expected-----------------------------
 
-#that you get a dataframe, assuming no API errors
-testthat::expect_s3_class(gtR::query_resource_combination("organisation", "project", "961756BF-E31F-4A13-836F-0A09BA02385C"), "data.frame")
+testthat::test_that(
+  "live API returns expected object types",
+  {
+    testthat::skip_if(Sys.getenv("GTR_RUN_LIVE_TESTS") != "true")
 
-#that you get a list assuming no API errors
-testthat::expect_s3_class(gtR::query_resource_combination("organisation", "project", "961756BF-E31F-4A13-836F-0A09BA02385C", df_only = F), "list")
+    #that you get a dataframe, assuming no API errors
+    testthat::expect_s3_class(gtR::query_resource_combination("organisation", "project", "01F2924C-FFB4-481B-B8F0-31234D33F0FA"), "data.frame")
+
+    #that you get a list assuming no API errors
+    testthat::expect_s3_class(gtR::query_resource_combination("organisation", "project", "01F2924C-FFB4-481B-B8F0-31234D33F0FA", df_only = FALSE), "list")
+  }
+)
 
 #that picking a non-logical df_only throws an error-----------------------
 
 testthat::test_that(
   "size outside range gives error",
   expect_error(
-    gtR::query_resource_combination("organisation", "project", "961756BF-E31F-4A13-836F-0A09BA02385C", df_only = "lol"),
+    gtR::query_resource_combination("organisation", "project", "01F2924C-FFB4-481B-B8F0-31234D33F0FA", df_only = "lol"),
     "'df_only` must be logical (TRUE or FALSE)",
     fixed = T
   )
